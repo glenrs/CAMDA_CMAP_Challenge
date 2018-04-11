@@ -1,6 +1,6 @@
 import numpy as np
 
-def featureSelect(train_features, test_features):
+def featureSelect(train_features, test_features,optomize):
 
     ## Concatenates the two arrays to get the combined array
     combined = np.concatenate((train_features, test_features),axis=0)
@@ -14,7 +14,7 @@ def featureSelect(train_features, test_features):
     numFeatures = len(combinedVariance)
 
     ## Gets the the value of 1/4 the number of features 
-    oneFourth = int(numFeatures * 5/ 100)
+    oneFourth = int(numFeatures * optomize/ 100)
 
     ## This grabs the top 25 variance indecis
     wantedIndecis = np.argpartition(combinedVariance,-oneFourth)[-oneFourth:]

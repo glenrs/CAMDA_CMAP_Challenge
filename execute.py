@@ -46,8 +46,8 @@ def makePredictions(X_train,X_test,y_train) :
 #    predictions, y_prob = rf(X_train, X_test, y_train)
 #    predictions, y_prob = naiveBayes(X_train, X_test, y_train)
 #    predictions, y_prob = kNearestNeighbor(X_train, X_test, y_train)
-#    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
-    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
+    predictions, y_prob = supportVM(X_train, X_test, y_train) ##Attention, this returns a y_prob of 0 because it doesn't work with the SVM
+#    predictions, y_prob = logisticRegression(X_train, X_test, y_train)
 #    predictions, y_prob = ensemble(X_train, X_test, y_train)
 
     return predictions, y_prob
@@ -78,7 +78,6 @@ def train(trainFile):
     i = 0
 
     ## Feature Selection needs to happen on each fold independently
-#    features = featureSelect(features)
     for train, test in skf.split(features, answers) :
         ## You can uncomment this row to see which indecis are used for the training and test sets for each fold
 #        print("Training: %s \n Test: %s" % (train, test))	
@@ -192,7 +191,7 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
 
                     ## this is a custom function that takes the top 25 % of the variance of the values 
                     if boolFeatureSelection == True :
-                        X_train,X_test = featureSelect(X_train,X_test)
+                        X_train,X_test = featureSelect(X_train,X_test,parameterTested)
        
                     scaler = StandardScaler()
 
@@ -205,7 +204,8 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
 
                     ## You will need to optomize your function
                     ## Change this to the function you are optomizing!!
-                    predictions, y_prob = rfo(X_train, X_test, y_train, parameterTested, randomSeed)
+#                    predictions, y_prob = rfo(X_train, X_test, y_train, parameterTested, randomSeed)
+                    predictions, y_prob = rf(X_train, X_test, y_train)
 
                     ## This will show the confusion in a matrix that will tell how often we were correct 
                     y_test_final = np.concatenate([y_test_final,y_test])
@@ -253,13 +253,14 @@ def optomize(trainFile,cellLine,outFile,boolFeatureSelection,rangeOfParameterTes
 ## Optimize, formating -> trainFile,outFile,boolFeatureSelection,valuesNumEstimators,rangeRandomSeed
 print("Training PC3\n")
 valuesNumEstimators = list(range(101))
-valuesNumEstimators = valuesNumEstimators[1:100:10]
+valuesNumEstimators = valuesNumEstimators[1:100:5]
 #valuesNumEstimators = [True,False] 
 print(valuesNumEstimators)
-#optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
-optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
+optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
+#optomize(trainPC3,"PC3","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",True,valuesNumEstimators,5)
 #optomize(trainMCF7,"MCF7","parameterOptomizationOutFile.txt",False,valuesNumEstimators,5)
+
 
 """
 ## TRAINING 
@@ -268,6 +269,7 @@ train(trainPC3)
 
 #print("\n\n\nTraining MCF7\n")
 train(trainMCF7)
+
 
 ## TESTING
 print("\n\n\nTesting PC3\n")
